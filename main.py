@@ -2,7 +2,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+import datetime
 import time
+import logging
 
 def calendar() -> None:
     options = webdriver.ChromeOptions()
@@ -10,7 +12,7 @@ def calendar() -> None:
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
     options.add_argument("--disable-blink-features=AutomationControlled")  # прячет запуск драйвера
-    # options.add_argument("--headless") # прячет запуск браузера
+    options.add_argument("--headless") # прячет запуск браузера
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)  # сам находит нужный
 
@@ -52,39 +54,76 @@ def calendar() -> None:
 
     try:
         driver.get("https://tanki.su/ru/daily-check-in/?utm_source=global-nav&utm_medium=link&utm_campaign=wot-portal")
-        for cookie in cookies:
-            driver.add_cookie(cookie)
-        driver.get("https://tanki.su/ru/daily-check-in/?utm_source=global-nav&utm_medium=link&utm_campaign=wot-portal")
-        time.sleep(5)
 
-        # Создание объекта BeautifulSoup
-        soup = BeautifulSoup(driver.page_source, "html.parser")
+        # Проверка наличия подключения
+        if driver.title:
 
-        # Нахождение элементов с классом "c_item c_complete"
-        elements = soup.find_all('div', class_="c_item c_desable")
-        # Вывод найденных элементов
-        print(elements[0].text)
+            logging.info(f'Страница успешно загружена')
 
-        # Выполнение клика на первом найденном элементе, если элемент существует и является callable
-        if elements:
-            first_element = elements[0]
-            if first_element.has_attr('onclick'):
-                first_element.click()
-                print(f'Активировал')
+            # Аутентификация
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+            driver.get(
+                "https://tanki.su/ru/daily-check-in/?utm_source=global-nav&utm_medium=link&utm_campaign=wot-portal")
+            time.sleep(5)
+
+            # Создание объекта BeautifulSoup
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+
+            authentication = soup.find('span', class_="cm-user-menu-link_cutted-text")
+
+            if authentication:
+                logging.info(f'Аутентификация выполнена')
+                # Нахождение элементов с классом "c_item c_complete"
+                elements = soup.find_all('div', class_="c_item c_desable")
+
+                # Выполнение клика на первом найденном элементе, если элемент существует и является callable
+                if elements:
+                    first_element = elements[0]
+                    if first_element.has_attr('onclick'):
+                        first_element.click()
+                        print(f'Активировал - {elements[0].text}')
+                        logging.info(f'Активировал - {elements[0].text}')
+                    else:
+                        print(f'Не могу активировать - {elements[0].text}')
+                        logging.info(f'Не могу активировать - {elements[0].text}')
+
+                # for element in elements:
+                #     print(element)
+
+                time.sleep(5)
             else:
-                print(f'Не могу нажать')
+                logging.info(f'Ошибка Аутентификации')
 
-        # for element in elements:
-        #     print(element)
+        else:
+            logging.info(f'Ошибка подключения к странице')
 
-        time.sleep(5)
     except Exception as ex:
-        print(ex)
+        logging.error("Ошибка:", ex)
     finally:
         driver.close()
         driver.quit()
 
 if __name__ == "__main__":
-    while True:
-        calendar()
-        time.sleep(97200)
+
+    logging.basicConfig(level=20, filename="log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s", encoding='utf-8')
+    try:
+        # Установить желаемое время для запуска (17:00)
+        target_time = datetime.time(0, 0, 0)
+
+        while True:
+            # Получить текущее время
+            current_time = datetime.datetime.now().time()
+
+            # Проверить, если текущее время больше 17:00
+            if current_time > target_time:
+                calendar()
+
+            time.sleep(2)
+    except BaseException as error:
+        logging.exception("BaseException")
+
+
+
+
+
