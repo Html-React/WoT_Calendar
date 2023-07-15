@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 import datetime
 import time
 import logging
@@ -75,21 +76,22 @@ def calendar() -> None:
             if authentication:
                 logging.info(f'Аутентификация выполнена')
                 # Нахождение элементов с классом "c_item c_complete"
-                elements = soup.find_all('div', class_="c_item c_desable")
 
-                # Выполнение клика на первом найденном элементе, если элемент существует и является callable
-                if elements:
-                    first_element = elements[0]
-                    if first_element.has_attr('onclick'):
-                        first_element.click()
-                        print(f'Активировал - {elements[0].text}')
-                        logging.info(f'Активировал - {elements[0].text}')
-                    else:
-                        print(f'Не могу активировать - {elements[0].text}')
-                        logging.info(f'Не могу активировать - {elements[0].text}')
+                elements = soup.find('div', class_='c_item.c_default')
 
                 # for element in elements:
                 #     print(element)
+
+                # Выполнение клика на первом найденном элементе, если элемент существует и является callable
+                if elements:
+                    elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default').click()
+                    print(f'Активировал - {elements.text}')
+                    logging.info(f'Активировал - {elements.text}')
+                else:
+                    print(f'Активация не доступна')
+                    logging.info(f'Активация не доступна')
+
+
 
                 time.sleep(5)
             else:
@@ -99,7 +101,8 @@ def calendar() -> None:
             logging.info(f'Ошибка подключения к странице')
 
     except Exception as ex:
-        logging.error("Ошибка:", ex)
+        logging.error(f'Exception: {ex}')
+        print(ex)
     finally:
         driver.close()
         driver.quit()
@@ -108,20 +111,12 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=20, filename="log.log", filemode="w", format="%(asctime)s %(levelname)s %(message)s", encoding='utf-8')
     try:
-        # Установить желаемое время для запуска (17:00)
-        target_time = datetime.time(0, 0, 0)
-
         while True:
-            # Получить текущее время
-            current_time = datetime.datetime.now().time()
-
-            # Проверить, если текущее время больше 17:00
-            if current_time > target_time:
-                calendar()
-
-            time.sleep(2)
+            calendar()
+            time.sleep(18000)
     except BaseException as error:
-        logging.exception("BaseException")
+        logging.exception(f'BaseException: {error}')
+        print(error)
 
 
 
