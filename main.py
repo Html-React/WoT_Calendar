@@ -77,14 +77,14 @@ def calendar() -> None:
                 logging.info(f'Аутентификация выполнена')
                 # Нахождение элементов с классом "c_item c_complete"
 
-                elements = soup.find('div', class_='c_item.c_default')
+                elements = soup.find('div', class_='c_item c_default')
 
                 # for element in elements:
                 #     print(element)
 
                 # Выполнение клика на первом найденном элементе, если элемент существует и является callable
                 if elements:
-                    elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default').click()
+                    # elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default').click()
                     print(f'Активировал - {elements.text}')
                     logging.info(f'Активировал - {elements.text}')
                 else:
