@@ -84,7 +84,7 @@ def calendar() -> None:
 
                 # Выполнение клика на первом найденном элементе, если элемент существует и является callable
                 if elements:
-                    # elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default').click()
+                    elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default').click()
                     print(f'Активировал - {elements.text}')
                     logging.info(f'Активировал - {elements.text}')
                 else:
