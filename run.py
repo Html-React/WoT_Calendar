@@ -14,7 +14,7 @@ from src.savedfile import SavedFile
 
 
 def calendar() -> int:
-    timing = TgKeys.TIME
+    timing = int(TgKeys.TIME)
     options = webdriver.ChromeOptions()
 
     # Добавление заголовков в опции драйвера
