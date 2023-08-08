@@ -19,6 +19,11 @@ class LoadFile:
         except pickle.UnpicklingError as e:
             logging.info(f"Ошибка: Произошла ошибка при десериализации данных: {e}")
             return False
+        except Exception as e:
+            logging.error(f'Ошибка в файле cookies.pkl: {e}')
+            return False
+
+
 
         # Устанавливаем cookies
         for cookie in cookies:
