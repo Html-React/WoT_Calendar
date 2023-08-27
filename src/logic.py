@@ -8,10 +8,10 @@ import time
 import logging
 import os
 import datetime
-import src.webdriver_version as wdv
 from src.loadfile import LoadFile
 from src.savedfile import SavedFile
 from src.deletefile import DeleteFile
+
 
 
 def calendar() -> int:
@@ -23,7 +23,7 @@ def calendar() -> int:
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 "
         "Safari/537.36")
     options.add_argument("--disable-blink-features=AutomationControlled")  # прячет запуск драйвера
-    options.add_argument("--headless")  # прячет запуск браузера
+    #options.add_argument("--headless")  # прячет запуск браузера
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
     try:
@@ -31,9 +31,7 @@ def calendar() -> int:
                                   options=options)  # сам находит нужный
     except ValueError as e:
         logging.info(f'По url такой драйвер не существует {e}')
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager(version=wdv.WebdriverVer().version()).install()),
-                                  options=options)
-
+        return timing
     try:
 
         if os.path.exists("cookies.pkl"):

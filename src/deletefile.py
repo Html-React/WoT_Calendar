@@ -1,6 +1,7 @@
 import logging
 import os
 
+
 class DeleteFile:
     def __init__(self, file_name="cookies.pkl"):
         self.file_name = file_name

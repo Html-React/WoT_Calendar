@@ -1,6 +1,6 @@
 import time
 import logging
-from src.logic import calendar
+from src import calendar
 
 def main():
     try:
