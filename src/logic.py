@@ -67,6 +67,10 @@ def calendar() -> int:
                         DeleteFile().delete_file()
                         timing = 60
                         return timing
+                    file = SavedFile(driver, True).savedfile()
+                    if not file:
+                        timing = 60
+                        return timing
                 else:
                     logging.info(f'Файлу больше 3 дней')
                     DeleteFile().delete_file()
@@ -85,6 +89,7 @@ def calendar() -> int:
 
             if authentication:
                 logging.info(f'Аутентификация выполнена')
+
                 # Нахождение элементов с классом "c_item c_complete"
 
                 elements = soup.find('div', class_='c_item c_default')
