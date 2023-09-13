@@ -59,7 +59,7 @@ def calendar() -> int:
                 # Получаем разницу в днях
                 data = (current_date - file_date).days
 
-                if data < 3:
+                if data < 1:
                     # Создаем экземпляр класса LoadFile
                     load = LoadFile(driver).loadfile()
                     if not load:
@@ -67,12 +67,12 @@ def calendar() -> int:
                         DeleteFile().delete_file()
                         timing = 60
                         return timing
-                    file = SavedFile(driver, True).savedfile()
-                    if not file:
-                        timing = 60
-                        return timing
+                    # file = SavedFile(driver, True).savedfile()
+                    # if not file:
+                    #     timing = 60
+                    #     return timing
                 else:
-                    logging.info(f'Файлу больше 3 дней')
+                    logging.info(f'Файлу больше суток')
                     DeleteFile().delete_file()
                     timing = 60
                     return timing
