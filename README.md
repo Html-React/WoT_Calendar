@@ -14,7 +14,7 @@
     
     * pip install -r requirements.txt
 
-2. Отредактируйте файл '.env':
+2. Отредактируйте файл '.env':   
 
     * LOGIN=test@mail.ru
     * PASSWORD=test
