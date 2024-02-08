@@ -12,7 +12,7 @@
 
 1. Установка
     
-    * скачать [Автокликер ](https://github.com/Html-React/WoT_Calendar/archive/refs/heads/master.zip) и распаковать папку WoT_Calendar-master в удобное место
+    * скачать [Автокликер ](https://github.com/Html-React/WoT_Calendar/archive/refs/heads/master.zip) и распаковать в удобное место
     * скачать и установить [Python-3.12 (64-разрядная версия)](https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe) или [Python-3.12 (32-разрядная версия)](https://www.python.org/ftp/python/3.12.0/python-3.12.0.exe)
     * запустить файл install.bat
 
