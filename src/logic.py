@@ -13,7 +13,6 @@ from src.savedfile import SavedFile
 from src.deletefile import DeleteFile
 
 
-
 def calendar() -> int:
     timing = int(TgKeys.TIME)
     options = webdriver.ChromeOptions()
@@ -65,23 +64,16 @@ def calendar() -> int:
                     if not load:
                         logging.info(f'Ошибка при взаимодествии с файлом cookies.pkl')
                         DeleteFile().delete_file()
-                        timing = 60
-                        return timing
-                    # file = SavedFile(driver, True).savedfile()
-                    # if not file:
-                    #     timing = 60
-                    #     return timing
+                        return 60
                 else:
                     logging.info(f'Файлу больше суток')
                     DeleteFile().delete_file()
-                    timing = 60
-                    return timing
+                    return 60
 
             else:
                 file = SavedFile(driver).savedfile()
                 if not file:
-                    timing = 60
-                    return timing
+                    return 60
 
             # Создание объекта BeautifulSoup
             soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -101,11 +93,12 @@ def calendar() -> int:
                     print(f'Активировал - {elements.text}')
                     logging.info(f'Активировал - {elements.text}')
                 else:
-                    print(f'Активация не доступна')
-                    logging.info(f'Активация не доступна')
+                    print(f'Активация задания не доступна')
+                    logging.info(f'Активация задания не доступна')
 
                 time.sleep(5)
             else:
+                DeleteFile().delete_file()
                 logging.info(f'Ошибка Аутентификации')
 
         else:
