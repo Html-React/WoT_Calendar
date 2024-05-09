@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 import pickle
 import os
 
+
 class SavedFile:
     def __init__(self, driver, update=False):
         self.driver = driver
@@ -23,12 +24,17 @@ class SavedFile:
         else:
             logging.info("Файл 'cookies.pkl' не найден.")
             login_form = self.driver.find_element(By.ID, "id_login")
+            cookie_banner = self.driver.find_element(By.ID, "cookie-banner")
             if login_form:
                 pass_form = self.driver.find_element(By.ID, "id_password")
                 login_form.send_keys(TgKeys.LOGIN)
                 pass_form.send_keys(TgKeys.PASSWORD)
                 elements = self.driver.find_element(By.CLASS_NAME,
                                                     'button-airy.button-airy__enter.js-auth-throbbing-element')
+                # Проверяем если баннер с сообщением, что используем куки есть, то отключаем его
+                if cookie_banner:
+                    self.driver.execute_script("document.getElementById('cookie-banner').style.display='none';")
+
                 elements.click()
                 time.sleep(30)
             else:
