@@ -2,7 +2,8 @@ import time
 import logging
 from src import calendar
 
-def main():
+
+def main() -> None:
     try:
         while True:
             timer = calendar()
@@ -11,6 +12,7 @@ def main():
     except BaseException as error:
         logging.exception(f'BaseException: {error}')
         print(error)
+
 
 if __name__ == "__main__":
     main()
