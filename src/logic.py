@@ -8,7 +8,7 @@ import time
 import logging
 import os
 import datetime
-from src.loadfile import LoadFile
+from src.loadfile import CookieLoader
 from src.savedfile import SavedFile
 from src.deletefile import DeleteFile
 
@@ -60,19 +60,22 @@ def calendar() -> int:
 
                 if data < 1:
                     # Создаем экземпляр класса LoadFile
-                    load = LoadFile(driver).loadfile()
-                    if not load:
+                    load = CookieLoader(driver, "cookies.pkl")
+                    result = load.load_cookies_and_apply()
+                    if not result:
                         logging.info(f'Ошибка при взаимодествии с файлом cookies.pkl')
                         DeleteFile().delete_file()
                         return 60
                 else:
                     logging.info(f'Файлу больше суток')
+
                     DeleteFile().delete_file()
                     return 60
 
             else:
-                file = SavedFile(driver).savedfile()
-                if not file:
+                file = SavedFile(driver)
+                result = file.savedfile()
+                if not result:
                     return 60
 
             # Создание объекта BeautifulSoup

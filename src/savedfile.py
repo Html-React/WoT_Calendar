@@ -11,47 +11,37 @@ class SavedFile:
         self.driver = driver
         self.update = update
 
-    def savedfile(self):
-
-        if self.update == True:
-            logging.info("Файл 'cookies.pkl' обновление")
-            login_form = self.driver.find_element(By.CLASS_NAME, "cm-user-menu-link_cutted-text")
-            if login_form:
-                pass
-            else:
-                logging.info("Логин не найден")
-                return False
+    def _find_login_form(self):
+        if self.update:
+            return self.driver.find_element(By.CLASS_NAME, "cm-user-menu-link_cutted-text")
         else:
-            logging.info("Файл 'cookies.pkl' не найден.")
-            login_form = self.driver.find_element(By.ID, "id_login")
+            return self.driver.find_element(By.ID, "id_login")
+
+    def _fill_login_form(self):
+        login_form = self._find_login_form()
+        if not login_form:
+            logging.info("Логин не найден")
+            return False
+
+        if not self.update:
+            pass_form = self.driver.find_element(By.ID, "id_password")
+            login_form.send_keys(TgKeys.LOGIN)
+            pass_form.send_keys(TgKeys.PASSWORD)
+            elements = self.driver.find_element(By.CLASS_NAME,
+                                                'button-airy.button-airy__enter.js-auth-throbbing-element')
             cookie_banner = self.driver.find_element(By.ID, "cookie-banner")
-            if login_form:
-                pass_form = self.driver.find_element(By.ID, "id_password")
-                login_form.send_keys(TgKeys.LOGIN)
-                pass_form.send_keys(TgKeys.PASSWORD)
-                elements = self.driver.find_element(By.CLASS_NAME,
-                                                    'button-airy.button-airy__enter.js-auth-throbbing-element')
-                # Проверяем если баннер с сообщением, что используем куки есть, то отключаем его
-                if cookie_banner:
-                    self.driver.execute_script("document.getElementById('cookie-banner').style.display='none';")
+            if cookie_banner:
+                self.driver.execute_script("document.getElementById('cookie-banner').style.display='none';")
+            elements.click()
+            time.sleep(30)
+        return True
 
-                elements.click()
-                time.sleep(30)
-            else:
-                return False
-
-
-
-        # Читаем из браузера cookies
-        cookies = self.driver.get_cookies()
-
-        # Проверяем, есть ли права на запись в текущем каталоге
+    def _save_cookies_to_file(self, cookies):
         directory = os.getcwd()
         if not os.access(directory, os.W_OK):
             logging.info(f"Ошибка: Нет прав на запись в каталоге {directory}")
             return False
 
-        # Сохраняем cookies в файл
         try:
             with open("cookies.pkl", "wb") as file:
                 pickle.dump(cookies, file)
@@ -63,3 +53,15 @@ class SavedFile:
         except pickle.PicklingError as e:
             logging.info(f"Произошла ошибка при сериализации данных: {e}")
             return False
+
+    def savedfile(self):
+        if self.update:
+            logging.info("Файл 'cookies.pkl' обновление")
+        else:
+            logging.info("Файл 'cookies.pkl' не найден.")
+
+        if not self._fill_login_form():
+            return False
+
+        cookies = self.driver.get_cookies()
+        return self._save_cookies_to_file(cookies)
