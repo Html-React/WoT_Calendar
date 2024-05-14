@@ -107,7 +107,7 @@ def calendar() -> int:
     except Exception as ex:
         logging.error(f'Exception: {ex}')
         print(ex)
-    finally:
-        driver.close()
-        driver.quit()
-        return timing
+
+    driver.close()
+    driver.quit()
+    return timing
