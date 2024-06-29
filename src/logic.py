@@ -65,18 +65,18 @@ def calendar() -> int:
                     if not result:
                         logging.info(f'Ошибка при взаимодествии с файлом cookies.pkl')
                         DeleteFile().delete_file()
-                        return 60
+                        return 2
                 else:
                     logging.info(f'Файлу больше суток')
 
                     DeleteFile().delete_file()
-                    return 60
+                    return 2
 
             else:
                 file = SavedFile(driver)
                 result = file.savedfile()
                 if not result:
-                    return 60
+                    return 2
 
             # Создание объекта BeautifulSoup
             soup = BeautifulSoup(driver.page_source, "html.parser")
