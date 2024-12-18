@@ -22,8 +22,8 @@ def calendar() -> int:
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 "
         "Safari/537.36")
     options.add_argument("--disable-blink-features=AutomationControlled")  # прячет запуск драйвера
-    options.add_argument("--headless")  # прячет запуск браузера
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    options.add_argument("--headless=old")  # прячет запуск браузера
+    options.add_experimental_option('excludeSwitches', ['enable-logging']) # Отключает лишние логи
 
     try:
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
