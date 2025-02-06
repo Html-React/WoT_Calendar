@@ -25,6 +25,8 @@ def calendar() -> int:
     options.add_argument("--headless=old")  # прячет запуск браузера
     options.add_experimental_option('excludeSwitches', ['enable-logging']) # Отключает лишние логи
 
+    # драйвер скачивается C:\Users\zak_x\.wdm\drivers\chromedriver\win64
+    # посмотреть последнею версию драйвера https://googlechromelabs.github.io/chrome-for-testing/
     try:
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                                   options=options)  # сам находит нужный
