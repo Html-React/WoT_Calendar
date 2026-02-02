@@ -3,6 +3,9 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from src.env import TgKeys
 import time
 import logging
@@ -88,19 +91,30 @@ def calendar() -> int:
             if authentication:
                 logging.info(f'Аутентификация выполнена')
 
-                # Нахождение элементов с классом "c_item c_complete"
+                # Нахождение элементов с классом ".c_item.c_default или .CalendarItem_base__D4guG.CalendarItem_default__pb-ED"
 
-                elements = soup.find('div', class_='c_item c_default')
+                selector = '.c_item.c_default, .CalendarItem_base__D4guG.CalendarItem_default__pb-ED'
 
-                # Выполнение клика на первом найденном элементе, если элемент существует и является callable
-                if elements:
-                    elements = driver.find_element(By.CLASS_NAME, 'c_item.c_default')
-                    elements.click()
-                    print(f'Активировал - {elements.text}')
-                    logging.info(f'Активировал - {elements.text}')
-                else:
-                    print(f'Активация задания не доступна')
-                    logging.info(f'Активация задания не доступна')
+                try:
+                    element = WebDriverWait(driver, 20).until(
+                        EC.element_to_be_clickable(
+                            (By.CSS_SELECTOR, selector)
+                        )
+                    )
+
+                    element.click()
+                    print(f'Активировал - {element.text}')
+                    logging.info(f'Активировал - {element.text}')
+
+                except TimeoutException:
+                    elements = driver.find_elements(By.CSS_SELECTOR, selector)
+
+                    if elements:
+                        print(f'Элемент найден, но не кликабелен. Классы: {selector}')
+                        logging.error(f'Элемент найден, но не кликабелен. Классы: {selector}')
+                    else:
+                        print(f'Элемент не найден. Классы: {selector}')
+                        logging.warning(f'Элемент не найден. Классы: {selector}')
 
                 time.sleep(5)
             else:
